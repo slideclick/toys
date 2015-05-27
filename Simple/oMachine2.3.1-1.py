@@ -1,4 +1,3 @@
-#http://www.ituring.com.cn/article/177439
 ## Virtual Machine 2.3.1
 ## 小步语义 -- 表达式
 ## python 3.4
@@ -12,11 +11,8 @@ class Number(object):
     def reducible(self):
         return False
 
-    def __repr__(self):
-        return '«'+ str(self.value) +'»'     
-        
-    def __str__ (self):
-        return str(self.value.__str__())
+    def to_s(self):
+        return str(self.value)
 
 
 class Boolean(object):
@@ -28,11 +24,7 @@ class Boolean(object):
     def reducible(self):
         return False
 
-    def __repr__(self):
-        return '«'+ str(self.value) +'»'         
-        
-    def __str__ (self):
-        print('__str__  called')
+    def to_s(self):
         return str(self.value)
 
 
@@ -55,11 +47,9 @@ class Add(object):
         else:
             return Number(self.left.value + self.right.value)
 
-    def __str__ (self):
-        return self.left.__str__ () + ' + ' + self.right.__str__ ()
+    def to_s(self):
+        return self.left.to_s() + ' + ' + self.right.to_s()
     
-    def __repr__(self):
-        return '«'+ str(self) +'»'      
 
 class Multiply(object):
     """ 乘法符号类
@@ -79,11 +69,9 @@ class Multiply(object):
         else:
             return Number(self.left.value * self.right.value)
         
-    def __str__ (self):
-        return self.left.__str__ () + ' * ' + self.right.__str__ ()
+    def to_s(self):
+        return self.left.to_s() + ' * ' + self.right.to_s()
 
-    def __repr__(self):
-        return '«'+ str(self) +'»'         
 
 class LessThan(object):
     """ 小于符号类
@@ -103,14 +91,8 @@ class LessThan(object):
         else:
             return Boolean(self.left.value < self.right.value)
 
-    def __repr__(self):
-        print('__repr__ called')
-        return '«'+ str(self) +'»' 
-            
-            
-    def __str__ (self):
-        print('__str__  called')
-        return str(self.left) + ' < ' + self.right.__str__ ()
+    def to_s(self):
+        return self.left.to_s() + ' < ' + self.right.to_s()
 
 
 class Variable(object):
@@ -125,7 +107,7 @@ class Variable(object):
     def reduce(self, environment):
         return environment[self.name]
 
-    def __str__ (self):
+    def to_s(self):
         return str(self.name)
 
 
@@ -141,7 +123,7 @@ class Machine(object):
 
     def run(self):
         while self.expression.reducible():
-            print(str(self.expression))
+            print(self.expression.to_s())
             self.step()
         print(self.expression.value)
             
@@ -171,12 +153,4 @@ Machine(
     Add(Variable('x'), Variable('y')),
     {'x':Number(3), 'y':Number(4)}
     ).run()
-
-LessThan(Number(5), Add(Number(2), Number(2)))
-expression  = Number(5)
-expression  = Add(Number(2), Number(2))
-expression  = Multiply(Number(2), Number(2))
-expression  = LessThan(Number(5), Add(Number(2), Number(2)))
-expression  = LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4)))
-#expression.reduce({x: Number(3)})
 
