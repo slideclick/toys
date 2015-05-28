@@ -29,11 +29,11 @@ class Boolean(object):
         return False
 
     def __repr__(self):
-        return '«'+ str(self.value) +'»'         
+        return '«'+ str(self) +'»'         
         
     def __str__ (self):
-        print('__str__  called')
-        return str(self.value)
+        #print('__str__  called')
+        return 'true' if (self.value) else 'false'
 
 
 
@@ -104,12 +104,12 @@ class LessThan(object):
             return Boolean(self.left.value < self.right.value)
 
     def __repr__(self):
-        print('__repr__ called')
+        #print('__repr__ called')
         return '«'+ str(self) +'»' 
             
             
     def __str__ (self):
-        print('__str__  called')
+        #print('__str__  called')
         return str(self.left) + ' < ' + self.right.__str__ ()
 
 
@@ -143,7 +143,8 @@ class Machine(object):
         while self.expression.reducible():
             print(str(self.expression))
             self.step()
-        print(self.expression.value)
+        print(self.expression)
+        return -1# return = return None = no statement
             
 
 ## test
@@ -177,6 +178,14 @@ expression  = Number(5)
 expression  = Add(Number(2), Number(2))
 expression  = Multiply(Number(2), Number(2))
 expression  = LessThan(Number(5), Add(Number(2), Number(2)))
-expression  = LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4)))
+e  = LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4)))
+e.reduce({'x': Number(3)})
+#e.evaluate({'x': Number(3)})
+print('');print('')
+Machine(
+   LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4))),
+   {'x': Number(4)}
+    ).run()
+
 #expression.reduce({x: Number(3)})
 
