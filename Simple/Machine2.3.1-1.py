@@ -3,6 +3,22 @@
 ## 小步语义 -- 表达式
 ## python 3.4
 
+
+class Hex(object):
+    """ 数值符号类
+    """
+    def __init__(self, value):
+        self.value = int('0x'+str(value),16)
+
+    def reducible(self):
+        return False
+
+    def __repr__(self):
+        return '«'+ str(self.value) +'»'     
+        
+    def __str__ (self):
+        return str(self.value.__str__())
+
 class Number(object):
     """ 数值符号类
     """
@@ -184,8 +200,11 @@ e.reduce({'x': Number(3)})
 print('');print('')
 Machine(
    LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4))),
-   {'x': Number(4)}
+   {'x': Number(3)}
     ).run()
-
+Machine(
+   LessThan(Multiply(Hex('B'), Variable('x')), Add(Number(3), Number(4))),
+   {'x': Number(3)}
+    ).run()
 #expression.reduce({x: Number(3)})
 
