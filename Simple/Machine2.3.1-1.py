@@ -2,8 +2,39 @@
 ## Virtual Machine 2.3.1
 ## 小步语义 -- 表达式
 ## python 3.4
+import functools
+import re
+_PREFIX = ''
+def trace(fn):
+    """A decorator that prints a function's name, its arguments, and its return
+    values each time the function is called. For example,
 
+    @trace
+    def compute_something(x, y):
+        # function body
+    """
+    @functools.wraps(fn)
+    def wrapped(*args, **kwds):
+        global _PREFIX
+        reprs = [repr(e) for e in args] 
+        reprs += [repr(k) + '=' + repr(v) for k, v in kwds.items()]
+        print('{0}({1})'.format(fn.__name__, ', '.join(reprs)) + ':')
+        _PREFIX += '    '
+        try:
+            result = fn(*args, **kwds)
+            _PREFIX = _PREFIX[:-4]
+        except Exception as e:
+            print(fn.__name__ + ' exited via exception')
+            _PREFIX = _PREFIX[:-4]
+            raise
+        # Here, print out the return value.
+        print('{0}({1}) -> {2}'.format(fn.__name__, ', '.join(reprs), result))
+        return result
+    return wrapped
 
+    
+
+    
 class Hex(object):
     """ 数值符号类
     """
@@ -86,7 +117,8 @@ class Multiply(object):
 
     def reducible(self):
         return True
-
+        
+    @trace
     def reduce(self, environment):
         if self.left.reducible():
             return Multiply(self.left.reduce(environment), self.right)
