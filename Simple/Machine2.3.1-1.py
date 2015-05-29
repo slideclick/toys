@@ -49,7 +49,26 @@ class Boolean(object):
         #print('__str__  called')
         return 'true' if (self.value) else 'false'
     
+class Fraction(object):# if no object, type() will return - >   <type 'instance'>, AND type(Fraction) WILL be <type 'classobj'>
+# while if there is object, type(Fraction) BE <type 'type'>
+    def __init__(self, num, den=1):
+        self.num = int(num)
+        self.den = int(den)
+    def __str__(self):
+        return "%d/%d" % (self.num, self.den)
 
+    def reducible(self):
+        return False
+	
+    def __mul__(self, object):
+        return Fraction(self.num*object.num, self.den*object.den)
+    #__rmul__ = __mul__
+    def __add__(self, other):
+        if type(other) == type(5):
+            other = Fraction(other)
+        return Fraction(self.num * other.den +\
+self.den * other.num,\
+self.den * other.den)
     
 class Hex(object):
     """ 数值符号类
@@ -257,5 +276,11 @@ Machine(
    LessThan(Multiply(Oct('10'), Variable('x')), Add(Number(3), Number(4))),
    {'x': Number(3)}
     ).run()    
+    
+print('');print('')    
+Machine(
+   LessThan(Multiply(Fraction('10'), Variable('x')), Add(Number(3), Number(4))),
+   {'x': Number(3)}
+    ).run()        
 #expression.reduce({x: Number(3)})
 
