@@ -33,6 +33,21 @@ def trace(fn):
         return result
     return wrapped
 
+class Boolean(object):
+    """ 布尔值符号类型
+    """
+    def __init__(self, value):
+        self.value = value
+
+    def reducible(self):
+        return False
+
+    def __repr__(self):
+        return '«'+ str(self) +'»'         
+        
+    def __str__ (self):
+        #print('__str__  called')
+        return 'true' if (self.value) else 'false'
     
 
     
@@ -50,6 +65,22 @@ class Hex(object):
         
     def __str__ (self):
         return str(self.value.__str__())
+	
+	
+class Oct(object):
+    """ 数值符号类
+    """
+    def __init__(self, value):
+        self.value = int('0'+str(value),8)
+
+    def reducible(self):
+        return False
+
+    def __repr__(self):
+        return '«'+ str(self.value) +'»'     
+        
+    def __str__ (self):
+        return str(self.value.__str__())	
 
 class Number(object):
     """ 数值符号类
@@ -65,24 +96,6 @@ class Number(object):
         
     def __str__ (self):
         return str(self.value.__str__())
-
-
-class Boolean(object):
-    """ 布尔值符号类型
-    """
-    def __init__(self, value):
-        self.value = value
-
-    def reducible(self):
-        return False
-
-    def __repr__(self):
-        return '«'+ str(self) +'»'         
-        
-    def __str__ (self):
-        #print('__str__  called')
-        return 'true' if (self.value) else 'false'
-
 
 
 class Add(object):
@@ -119,7 +132,7 @@ class Multiply(object):
     def reducible(self):
         return True
         
-    @trace
+    #@trace
     def reduce(self, environment):
         if self.left.reducible():
             return Multiply(self.left.reduce(environment), self.right)
@@ -200,29 +213,29 @@ class Machine(object):
 ## 在虚拟机中运行表达式
 
 ##1 * 2 + 3 * 4 = 14
-Machine(Add(Multiply(Number(1), Number(2)),
-            Multiply(Number(3), Number(4))),
-        {}
-        ).run()
+#~ Machine(Add(Multiply(Number(1), Number(2)),
+            #~ Multiply(Number(3), Number(4))),
+        #~ {}
+        #~ ).run()
 
-print('')
+#~ print('')
 
-##5 < 2 + 2
-Machine(
-    LessThan(Number(5), Add(Number(2), Number(2))),
-    {}
-    ).run()
+#~ ##5 < 2 + 2
+#~ Machine(
+    #~ LessThan(Number(5), Add(Number(2), Number(2))),
+    #~ {}
+    #~ ).run()
 
-print('')
+#~ print('')
 
 
-##x = 3; y = 4; x + y = 7
-Machine(
-    Add(Variable('x'), Variable('y')),
-    {'x':Number(3), 'y':Number(4)}
-    ).run()
+#~ ##x = 3; y = 4; x + y = 7
+#~ Machine(
+    #~ Add(Variable('x'), Variable('y')),
+    #~ {'x':Number(3), 'y':Number(4)}
+    #~ ).run()
 
-LessThan(Number(5), Add(Number(2), Number(2)))
+#~ LessThan(Number(5), Add(Number(2), Number(2)))
 expression  = Number(5)
 expression  = Add(Number(2), Number(2))
 expression  = Multiply(Number(2), Number(2))
@@ -233,11 +246,16 @@ e.reduce({'x': Number(3)})
 print('');print('')
 Machine(
    LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4))),
-   {'x': Number(3)}
+   {'x': Number(5)}
     ).run()
+#~ Machine(
+   #~ LessThan(Multiply(Hex('B'), Variable('x')), Add(Number(3), Number(4))),
+   #~ {'x': Number(3)}
+    #~ ).run()
+print('');print('')    
 Machine(
-   LessThan(Multiply(Hex('B'), Variable('x')), Add(Number(3), Number(4))),
+   LessThan(Multiply(Oct('10'), Variable('x')), Add(Number(3), Number(4))),
    {'x': Number(3)}
-    ).run()
+    ).run()    
 #expression.reduce({x: Number(3)})
 
