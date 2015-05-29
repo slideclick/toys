@@ -75,7 +75,7 @@ self.den * other.den)
     __radd__ = __add__
     
     def __lt__(self,other):
-        if isinstance(other,type(5)):#陷阱：函数参数是other,但是这里写成了object居然不报错，找到了全局变量object去了
+        if isinstance(other,type(5)):#陷阱：函数参数是other,但是这行写成了object居然不报错，找到了全局变量object去了
             other=Fraction(other)
         elif isinstance(other,Number):   
             other=Fraction(other)    
@@ -147,7 +147,7 @@ class Add(object):
         elif self.right.reducible():
             return Add(self.left, self.right.reduce(environment))
         else:
-            return Number(self.left.value + self.right.value)
+            return Number(self.left.value + self.right.value)#返回的是Number
 
     def __str__ (self):
         return self.left.__str__ () + ' + ' + self.right.__str__ ()
@@ -197,7 +197,7 @@ class LessThan(object):
         elif self.right.reducible():
             return LessThan(self.left, self.right.reduce(environment))
         else:
-            return Boolean(self.left.value < self.right.value)
+            return Boolean(self.left.value < self.right.value)#这里如果去掉value那么就是 Number()比较Number().你可以去比较Fraction()
 
     def __repr__(self):
         #print('__repr__ called')
@@ -282,7 +282,7 @@ e=Add(Number(Fraction(6,2)),Number(3))
 e=Multiply(Number(Fraction(6,2)),Number(3))
 e=Multiply(Number(3),Number(Fraction(6,2)))
 e=Multiply(Number(Fraction(6,2)),Number(3))
-#e=LessThan(Number(Fraction(8)),Number(Fraction(6,2)))
+e=LessThan(Number(Fraction(2)),Number(Fraction(6,2)))
 ##e=Add(Number(3),Number(Fraction(6,2)))
 e.reduce({})
 #e.reduce({'x': Number(3)})
