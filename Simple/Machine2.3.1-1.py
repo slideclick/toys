@@ -3,35 +3,35 @@
 ## Virtual Machine 2.3.1
 ## 小步语义 -- 表达式
 ## python 3.4
-import functools
-import re
-_PREFIX = ''
-def trace(fn):
-    """A decorator that prints a function's name, its arguments, and its return
-    values each time the function is called. For example,
+#~ import functools
+#~ import re
+#~ _PREFIX = ''
+#~ def trace(fn):
+    #~ """A decorator that prints a function's name, its arguments, and its return
+    #~ values each time the function is called. For example,
 
-    @trace
-    def compute_something(x, y):
-        # function body
-    """
-    @functools.wraps(fn)
-    def wrapped(*args, **kwds):
-        global _PREFIX
-        reprs = [repr(e) for e in args] 
-        reprs += [repr(k) + '=' + repr(v) for k, v in kwds.items()]
-        print('{0}({1})'.format(fn.__name__, ', '.join(reprs)) + ':')
-        _PREFIX += '    '
-        try:
-            result = fn(*args, **kwds)
-            _PREFIX = _PREFIX[:-4]
-        except Exception as e:
-            print(fn.__name__ + ' exited via exception')
-            _PREFIX = _PREFIX[:-4]
-            raise
-        # Here, print out the return value.
-        print('{0}({1}) -> {2}'.format(fn.__name__, ', '.join(reprs), result))
-        return result
-    return wrapped
+    #~ @trace
+    #~ def compute_something(x, y):
+        #~ # function body
+    #~ """
+    #~ @functools.wraps(fn)
+    #~ def wrapped(*args, **kwds):
+        #~ global _PREFIX
+        #~ reprs = [repr(e) for e in args] 
+        #~ reprs += [repr(k) + '=' + repr(v) for k, v in kwds.items()]
+        #~ print('{0}({1})'.format(fn.__name__, ', '.join(reprs)) + ':')
+        #~ _PREFIX += '    '
+        #~ try:
+            #~ result = fn(*args, **kwds)
+            #~ _PREFIX = _PREFIX[:-4]
+        #~ except Exception as e:
+            #~ print(fn.__name__ + ' exited via exception')
+            #~ _PREFIX = _PREFIX[:-4]
+            #~ raise
+        #~ # Here, print out the return value.
+        #~ print('{0}({1}) -> {2}'.format(fn.__name__, ', '.join(reprs), result))
+        #~ return result
+    #~ return wrapped
 
 class Boolean(object):
     """ 布尔值符号类型
@@ -55,9 +55,10 @@ class Fraction(object):# if no object, type() will return - >   <type 'instance'
         self.num = int(num)
         self.den = int(den)
     def __str__(self):
-        return "%d/%d" % (self.num, self.den)
+        return "<<%d/%d>>" % (self.num, self.den)
 
-
+    def __repr__(self):
+        return "«"+str(self.num / self.den)+"»" #% (self.num, self.den)
 	
     def __mul__(self, object):
         return Fraction(self.num*object.num, self.den*object.den)
@@ -110,10 +111,10 @@ class Number(object):
         return False
 
     def __repr__(self):
-        return '«'+ str(self.value) +'»'     
+        return '«'+ repr(self.value) +'»'     
         
     def __str__ (self):
-        return str(self.value.__str__())
+        return str(self.value)
 
 
 class Add(object):
@@ -126,7 +127,7 @@ class Add(object):
     def reducible(self):
         return True
 
-    @trace
+   # @trace
     def reduce(self, environment):
         if self.left.reducible():
             return Add(self.left.reduce(environment), self.right)
@@ -151,7 +152,7 @@ class Multiply(object):
     def reducible(self):
         return True
         
-    @trace
+    #@trace
     def reduce(self, environment):
         if self.left.reducible():
             return Multiply(self.left.reduce(environment), self.right)
@@ -176,7 +177,7 @@ class LessThan(object):
     def reducible(self):
         return True
 
-    @trace
+    #@trace
     def reduce(self, environment):
         if self.left.reducible():
             return LessThan(self.left.reduce(environment), self.right)
@@ -261,13 +262,18 @@ expression  = Add(Number(2), Number(2))
 expression  = Multiply(Number(2), Number(2))
 expression  = LessThan(Number(5), Add(Number(2), Number(2)))
 e  = LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4)))
-e.reduce({'x': Number(3)})
+e= Multiply(Number(Fraction(10)), Number(Fraction(3,10)))
+e=Fraction(3,10)
+e=Number(Fraction(3,10))
+e=Add(Number(Fraction(6,2)),Number(3))
+e=Multiply(Number(Fraction(6,2)),Number(3))
+#e.reduce({'x': Number(3)})
 #e.evaluate({'x': Number(3)})
 print('');print('')
-Machine(
-   LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4))),
-   {'x': Number(5)}
-    ).run()
+#~ Machine(
+   #~ LessThan(Multiply(Number(2), Variable('x')), Add(Number(3), Number(4))),
+   #~ {'x': Number(5)}
+    #~ ).run()
 #~ Machine(
    #~ LessThan(Multiply(Hex('B'), Variable('x')), Add(Number(3), Number(4))),
    #~ {'x': Number(3)}
@@ -277,7 +283,11 @@ Machine(
    #~ LessThan(Multiply(Oct('10'), Variable('x')), Add(Number(3), Number(4))),
    #~ {'x': Number(3)}
     #~ ).run()    
-    
+print('');print('')    
+Machine(
+ Add(Number(Fraction(6,2)),Number(Fraction(30,10))),
+   {'x': Number(Fraction(3,10))}
+    ).run()     
 print('');print('')    
 Machine(
    LessThan(Multiply(Number(Fraction(10)), Variable('x')), Add(Number(3), Number(4))),
