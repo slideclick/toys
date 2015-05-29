@@ -1,3 +1,4 @@
+# -* - coding: UTF-8 -* -
 ## Virtual Machine 2.3.1
 ## 小步语义 -- 表达式
 ## python 3.4
