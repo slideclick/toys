@@ -60,15 +60,28 @@ class Fraction(object):# if no object, type() will return - >   <type 'instance'
     def __repr__(self):
         return "«"+str(self.num / self.den)+"»" #% (self.num, self.den)
 	
-    def __mul__(self, object):
+    def __mul__(self, object):#陷阱：这里的object是局部变量
+        if isinstance(object,type(5)):
+            object=Fraction(object)
         return Fraction(self.num*object.num, self.den*object.den)
-    #__rmul__ = __mul__
-    def __add__(self, other):
+    __rmul__ = __mul__
+
+    def __add__(self, other):#它可以与int加，而mul不行，因为没有处理type
         if type(other) == type(5):
-            other = Fraction(other)
+            other = Fraction(other)#陷阱：函数参数是other,但是这里写成了object居然不报错，找到了全局变量去了
         return Fraction(self.num * other.den +\
 self.den * other.num,\
 self.den * other.den)
+    __radd__ = __add__
+    
+    def __lt__(self,other):
+        if isinstance(other,type(5)):
+            other=Fraction(other)
+        elif isinstance(other,Number):   
+            other=Fraction(other)    
+        return self.num/self.den < other.num/other.den      
+        
+    
     
 class Hex(object):
     """ 数值符号类
@@ -267,6 +280,11 @@ e=Fraction(3,10)
 e=Number(Fraction(3,10))
 e=Add(Number(Fraction(6,2)),Number(3))
 e=Multiply(Number(Fraction(6,2)),Number(3))
+e=Multiply(Number(3),Number(Fraction(6,2)))
+e=Multiply(Number(Fraction(6,2)),Number(3))
+#e=LessThan(Number(Fraction(8)),Number(Fraction(6,2)))
+##e=Add(Number(3),Number(Fraction(6,2)))
+e.reduce({})
 #e.reduce({'x': Number(3)})
 #e.evaluate({'x': Number(3)})
 print('');print('')
@@ -284,13 +302,13 @@ print('');print('')
    #~ {'x': Number(3)}
     #~ ).run()    
 print('');print('')    
-Machine(
- Add(Number(Fraction(6,2)),Number(Fraction(30,10))),
-   {'x': Number(Fraction(3,10))}
-    ).run()     
+#~ Machine(
+ #~ Add(Number(Fraction(6,2)),Number(Fraction(30,10))),
+   #~ {'x': Number(Fraction(3,10))}
+    #~ ).run()     
 print('');print('')    
 Machine(
-   LessThan(Multiply(Number(Fraction(10)), Variable('x')), Add(Number(3), Number(4))),
+   LessThan(Multiply(Number(Fraction(100)), Variable('x')), Add(Number(3), Number(4))),
    {'x': Number(Fraction(3,10))}
     ).run()        
 #expression.reduce({x: Number(3)})
