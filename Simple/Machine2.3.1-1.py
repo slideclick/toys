@@ -60,7 +60,7 @@ class Fraction(object):# if no object, type() will return - >   <type 'instance'
     def __repr__(self):
         return "«"+str(self.num / self.den)+"»" #% (self.num, self.den)
 	
-    def __mul__(self, object):#陷阱：这里的object是局部变量
+    def __mul__(self, object):#陷阱：这里的object是局部变量，没有问题：LEGB
         if isinstance(object,type(5)):
             object=Fraction(object)
         return Fraction(self.num*object.num, self.den*object.den)
@@ -68,14 +68,14 @@ class Fraction(object):# if no object, type() will return - >   <type 'instance'
 
     def __add__(self, other):#它可以与int加，而mul不行，因为没有处理type
         if type(other) == type(5):
-            other = Fraction(other)#陷阱：函数参数是other,但是这里写成了object居然不报错，找到了全局变量去了
+            other = Fraction(other)
         return Fraction(self.num * other.den +\
 self.den * other.num,\
 self.den * other.den)
     __radd__ = __add__
     
     def __lt__(self,other):
-        if isinstance(other,type(5)):
+        if isinstance(other,type(5)):#陷阱：函数参数是other,但是这里写成了object居然不报错，找到了全局变量object去了
             other=Fraction(other)
         elif isinstance(other,Number):   
             other=Fraction(other)    
@@ -308,7 +308,7 @@ print('');print('')
     #~ ).run()     
 print('');print('')    
 Machine(
-   LessThan(Multiply(Number(Fraction(100)), Variable('x')), Add(Number(3), Number(4))),
+   LessThan(Multiply(Number(Fraction(10)), Variable('x')), Add(Number(3), Number(4))),
    {'x': Number(Fraction(3,10))}
     ).run()        
 #expression.reduce({x: Number(3)})
