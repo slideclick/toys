@@ -57,8 +57,7 @@ class Fraction(object):# if no object, type() will return - >   <type 'instance'
     def __str__(self):
         return "%d/%d" % (self.num, self.den)
 
-    def reducible(self):
-        return False
+
 	
     def __mul__(self, object):
         return Fraction(self.num*object.num, self.den*object.den)
@@ -127,6 +126,7 @@ class Add(object):
     def reducible(self):
         return True
 
+    @trace
     def reduce(self, environment):
         if self.left.reducible():
             return Add(self.left.reduce(environment), self.right)
@@ -151,7 +151,7 @@ class Multiply(object):
     def reducible(self):
         return True
         
-    #@trace
+    @trace
     def reduce(self, environment):
         if self.left.reducible():
             return Multiply(self.left.reduce(environment), self.right)
@@ -176,6 +176,7 @@ class LessThan(object):
     def reducible(self):
         return True
 
+    @trace
     def reduce(self, environment):
         if self.left.reducible():
             return LessThan(self.left.reduce(environment), self.right)
@@ -271,16 +272,16 @@ Machine(
    #~ LessThan(Multiply(Hex('B'), Variable('x')), Add(Number(3), Number(4))),
    #~ {'x': Number(3)}
     #~ ).run()
-print('');print('')    
-Machine(
-   LessThan(Multiply(Oct('10'), Variable('x')), Add(Number(3), Number(4))),
-   {'x': Number(3)}
-    ).run()    
+#~ print('');print('')    
+#~ Machine(
+   #~ LessThan(Multiply(Oct('10'), Variable('x')), Add(Number(3), Number(4))),
+   #~ {'x': Number(3)}
+    #~ ).run()    
     
 print('');print('')    
 Machine(
-   LessThan(Multiply(Fraction('10'), Variable('x')), Add(Number(3), Number(4))),
-   {'x': Number(3)}
+   LessThan(Multiply(Number(Fraction(10)), Variable('x')), Add(Number(3), Number(4))),
+   {'x': Number(Fraction(3,10))}
     ).run()        
 #expression.reduce({x: Number(3)})
 
