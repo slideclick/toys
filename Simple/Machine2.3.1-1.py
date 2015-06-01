@@ -75,7 +75,7 @@ self.den * other.den)
     __radd__ = __add__
     
     def __lt__(self,other):
-        if isinstance(object,type(5)):#陷阱：函数参数是other,但是这行写成了object居然不报错，找到了全局变量object去了
+        if isinstance(object,type(5)):#陷阱：函数参数是other,但是这行写成了object居然不报错，找到了全局变量object去了.这句是从__mul__里面抄来的。导致恒为false
             other=Fraction(other)
         elif isinstance(other,Number):   
             other=Fraction(other)    
