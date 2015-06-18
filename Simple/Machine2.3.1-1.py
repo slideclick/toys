@@ -1,5 +1,5 @@
 # # -* - coding: UTF-8 -* -
-#http://www.ituring.com.cn/article/177439
+#  http://www.ituring.com.cn/article/177439
 ## Virtual Machine 2.3.1
 ## 小步语义 -- 表达式
 ## python 3.4
