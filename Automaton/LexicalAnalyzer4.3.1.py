@@ -56,7 +56,7 @@ class LexicalAnalyzer(object):
         return rule['token']
 
     def rule_matching(self, string):
-        grammar = self.__class__.GRAMMAR
+        grammar = LexicalAnalyzer.GRAMMAR# self.__class__.GRAMMAR
         matches = [self.match_at_beginning(rule['pattern'], string) for rule in grammar]
         rules_with_matches = [[rule, match] for rule, match in zip(grammar, matches) if match != None]
         return self.rule_with_longest_match(rules_with_matches)
