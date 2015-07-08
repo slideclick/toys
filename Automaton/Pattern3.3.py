@@ -90,10 +90,10 @@ class Pattern(object):
             return self.to_s()
             
     def __repr__(self):
-        return '/' + self.to_s() + '/'
+        return self.to_s()
         
     def __str__(self):
-        return self.__repr__()
+        return '/' + self.__repr__() + '/'
         
     def matches(self, string):
         return self.to_nfa_design().accepts(string)
