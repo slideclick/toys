@@ -27,8 +27,9 @@ class LexicalAnalyzer(object):
         { 'token': '*', 'pattern': r'\*' }, # 乘号
         { 'token': '<', 'pattern': r'\<' }, # 小于号
         { 'token': 'n', 'pattern': r'[0-9]+' }, # 数字
+        { 'token': 'v', 'pattern': r'[a-z]+(?<! true|fals)' }, # 变量名,        
         { 'token': 'b', 'pattern': r'true|false' }, # 布尔值
-        { 'token': 'v', 'pattern': r'[a-z]+' } # 变量名
+        
     ]
     
     def __init__(self, string):
