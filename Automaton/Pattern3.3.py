@@ -88,10 +88,13 @@ class Pattern(object):
             return '(' + self.to_s() + ')'
         else:
             return self.to_s()
-
-    def __str__(self):
+            
+    def __repr__(self):
         return '/' + self.to_s() + '/'
-
+        
+    def __str__(self):
+        return self.__repr__()
+        
     def matches(self, string):
         return self.to_nfa_design().accepts(string)
 
@@ -264,3 +267,5 @@ print(pattern.matches('aba'))
 print(pattern.matches('abab'))
 print(pattern.matches('abaab'))
 print(pattern.matches('abba'))
+pattern.matches('ababa')
+pattern.matches('ababab')
