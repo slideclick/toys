@@ -7,7 +7,44 @@
 # Authors: Chai Fei
 
 import re
+import pprint
+import functools
 
+PREFIX = ''
+def trace(fn):
+    """A decorator that prints a function's name, its arguments, and its return
+    values each time the function is called. For example,
+
+    @trace
+    def compute_something(x, y):
+        # function body
+    """
+    @functools.wraps(fn)
+    def wrapped(*args, **kwds):
+        global PREFIX
+        reprs = [repr(e) for e in args] 
+        reprs += [repr(k) + '=' + repr(v) for k, v in kwds.items()]
+        log('{0}({1})'.format(fn.__name__, ', '.join(reprs)) + ':')
+        PREFIX += '    '
+        try:
+            result = fn(*args, **kwds)
+            PREFIX = PREFIX[:-4]
+        except Exception as e:
+            log(fn.__name__ + ' exited via exception')
+            PREFIX = PREFIX[:-4]
+            raise
+        # Here, print out the return value.
+        log('{0}({1}) -> {2}'.format(fn.__name__, ', '.join(reprs), result))
+        return result
+    return wrapped
+
+def log(message):
+    """Print an indented message (used with trace)."""
+    if type(message) is not str:
+        message = str(message)
+    print(PREFIX + re.sub('\n', '\n' + PREFIX, message))
+
+    
 class LexicalAnalyzer(object):
     """ 词法分析
         将代码字符串解析成符号列表
@@ -27,7 +64,7 @@ class LexicalAnalyzer(object):
         { 'token': '*', 'pattern': r'\*' }, # 乘号
         { 'token': '<', 'pattern': r'\<' }, # 小于号
         { 'token': 'n', 'pattern': r'[0-9]+' }, # 数字
-        { 'token': 'v', 'pattern': r'[a-z]+(?<! true|fals)' }, # 变量名,        
+        { 'token': 'v', 'pattern': r'[a-z]+(?<! true|fals)' }, # 变量名,        (?<! true|false)
         { 'token': 'b', 'pattern': r'true|false' }, # 布尔值
         
     ]
@@ -58,7 +95,7 @@ class LexicalAnalyzer(object):
     def rule_matching(self, string):
         grammar = LexicalAnalyzer.GRAMMAR# self.__class__.GRAMMAR
         matches = [self.match_at_beginning(rule['pattern'], string) for rule in grammar]
-        rules_with_matches = [[rule, match] for rule, match in zip(grammar, matches) if match != None]
+        rules_with_matches = [(rule, match) for rule, match in zip(grammar, matches) if match != None]
         return self.rule_with_longest_match(rules_with_matches)
 
     def match_at_beginning(self, pattern, string):
@@ -67,8 +104,11 @@ class LexicalAnalyzer(object):
             return None
         else:
             return result.group(0)
-
+    
+    #@trace
     def rule_with_longest_match(self, rules_with_matches):
+        if len(rules_with_matches) > 1:
+            pprint.pprint(rules_with_matches)
         return max(rules_with_matches, key = lambda value: len(value[1]))
 
     def string_after(self, match):
